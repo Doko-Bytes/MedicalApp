@@ -1,0 +1,36 @@
+# Both halves of the app, one command: docker compose up
+#
+# The Vite dev server serves the frontend on :5173 and proxies /api to Django
+# on :8000, so the browser only ever talks to one origin — session and CSRF
+# cookies work with no CORS anywhere.
+#
+# ponytail: dev servers, SQLite, no nginx, no gunicorn. That is what "run the
+# whole system at once" needs. Add a production target when there is somewhere
+# to deploy it to.
+
+services:
+  backend:
+    build: ./backend
+    environment:
+      DJANGO_DEBUG: '1'
+      DJANGO_ALLOWED_HOSTS: 'localhost,127.0.0.1,backend'
+    volumes:
+      - ./backend:/app
+      - backend-venv:/app/venv # keep the host's Windows venv out of the container
+    ports:
+      - '8000:8000'
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_API_TARGET: 'http://backend:8000'
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # the image's Linux modules win over the host's
+    ports:
+      - '5173:5173'
+    depends_on:
+      - backend
+
+volumes:
+  backend-venv:
