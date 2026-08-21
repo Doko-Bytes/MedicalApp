@@ -1,0 +1,18 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="229" height="53.4725" viewBox="0 0 229 53.4725" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 92">
+<path id="Images" d="M26.7363 0.807617C41.0566 0.807652 52.665 12.4161 52.665 26.7363C52.665 41.0565 41.0565 52.665 26.7363 52.665C12.4161 52.665 0.807648 41.0566 0.807617 26.7363C0.807617 12.4161 12.4161 0.807617 26.7363 0.807617Z" fill="#D9D9D9" stroke="white" stroke-width="1.61427"/>
+<path id="Images_2" d="M85.2455 0.807617C99.5657 0.807652 111.174 12.4161 111.174 26.7363C111.174 41.0565 99.5657 52.665 85.2455 52.665C70.9252 52.665 59.3168 41.0566 59.3168 26.7363C59.3168 12.4161 70.9252 0.807617 85.2455 0.807617Z" fill="#D9D9D9" stroke="white" stroke-width="1.61427"/>
+<path id="Images_3" d="M143.755 0.807617C158.075 0.807652 169.683 12.4161 169.683 26.7363C169.683 41.0565 158.075 52.665 143.755 52.665C129.434 52.665 117.826 41.0566 117.826 26.7363C117.826 12.4161 129.434 0.807617 143.755 0.807617Z" fill="#D9D9D9" stroke="white" stroke-width="1.61427"/>
+<g id="Group 1">
+<ellipse id="Rectangle" cx="202.264" cy="26.7363" rx="26.7363" ry="26.7363" fill="white"/>
+<g id="arrow_outward">
+<mask id="mask0_0_10" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="190" y="14" width="25" height="26">
+<rect id="Bounding box" x="190.27" y="14.9024" width="24.5505" height="24.5505" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_0_10)">
+<path id="arrow_outward_2" d="M196.817 33.3153L195.385 31.8832L205.205 22.063H196.408V20.0171H208.683V32.2923H206.637V23.4951L196.817 33.3153Z" fill="#1C1C1C"/>
+</g>
+</g>
+</g>
+</g>
+</svg>

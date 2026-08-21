@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-uxd^n-vm@$!a3p&=wsutchv7hzc1ah_w68&q_j-@@*kk^-+317'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-uxd^n-vm@$!a3p&=wsutchv7hzc1ah_w68&q_j-@@*kk^-+317',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,backend').split(',')
+
+# Sign-in shortcut while no SMS gateway is wired: request-code hands out this
+# fixed code instead of a random one, so any number signs in with it. Only read
+# when DEBUG is on. Set DJANGO_DEV_LOGIN_CODE='' to go back to random codes
+# printed by send_sms.
+# ponytail: delete this and its use in api.views once send_sms really sends.
+DEV_LOGIN_CODE = os.environ.get('DJANGO_DEV_LOGIN_CODE', '000000')
+
+# The Vite dev server proxies /api here and forwards its own Origin header, so
+# the browser's origin has to be trusted even though the Host is Django's.
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    'DJANGO_CSRF_ORIGINS', 'http://localhost:5173,http://127.0.0.1:5173,http://localhost:8000'
+).split(',')
 
 
 # Application definition
@@ -37,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'api',
     'frontend',
     'mobile',
 ]
@@ -106,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kathmandu'
 
 USE_I18N = True
 
@@ -117,3 +135,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Uploaded lab reports. Local disk is enough for one clinic; the only thing
+# that would move this to object storage is a second clinic.
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
