@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="53.4725" height="53.4725" viewBox="0 0 53.4725 53.4725" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 1">
+<ellipse id="Rectangle" cx="26.7363" cy="26.7363" rx="26.7363" ry="26.7363" fill="#08474B"/>
+<g id="arrow_outward">
+<mask id="mask0_0_4" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="14" y="14" width="26" height="26">
+<rect id="Bounding box" x="14.7426" y="14.9024" width="24.5505" height="24.5505" fill="#D9D9D9"/>
+</mask>
+<g mask="url(#mask0_0_4)">
+<path id="arrow_outward_2" d="M21.2894 33.3153L19.8573 31.8832L29.6775 22.063H20.8802V20.0171H33.1554V32.2923H31.1096V23.4951L21.2894 33.3153Z" fill="white"/>
+</g>
+</g>
+</g>
+</svg>

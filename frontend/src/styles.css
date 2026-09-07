@@ -1,0 +1,562 @@
+/* One stylesheet. The app is a dozen screens that all look the same — a
+   component library would be more machinery than the thing it dresses.
+
+   Devanagari sits lower and needs more line-height than Latin, so the base
+   line-height is generous enough for both scripts to share every component. */
+
+/* Palette and display face come from the Mecliw Figma file: mint page,
+   dark-teal brand, Urbanist headings. */
+:root {
+  --ink: #1c1c1c;
+  --ink-soft: #5f6d6e;
+  --line: #d9e8e8;
+  --bg: #effeff;
+  --paper: #ffffff;
+  --teal: #08474b;
+  --teal-dark: #063134;
+  --teal-wash: #dff1f1;
+  --amber: #b45309;
+  --amber-wash: #fdf3e3;
+  --red: #b42318;
+  --red-wash: #fdeceb;
+  --green: #15803d;
+  --green-wash: #e8f5ec;
+  --display: 'Urbanist', 'Segoe UI', system-ui, 'Noto Sans Devanagari', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+/* Hierarchy is size, not weight — the design uses Urbanist Regular throughout.
+   The one exception is <strong> inside dense rows (money, patient names),
+   which stays a notch heavier so a table is still scannable. */
+h1, h2, h3, h4 { line-height: 1.25; margin: 0 0 .75rem; font-weight: 400; }
+h1 { font-size: clamp(2rem, 3.4vw, 2.6rem); margin-bottom: 1.5rem; }
+h2 { font-size: 1.55rem; }
+h3 { font-size: 1.25rem; margin-top: 1.75rem; }
+h4 { font-size: .95rem; letter-spacing: .04em; color: var(--ink-soft); }
+p { margin: 0 0 .75rem; }
+a { color: var(--teal); }
+strong { font-weight: 500; }
+
+main { min-height: 70vh; padding: 2.5rem 1.25rem 6rem; }
+.narrow { max-width: 780px; margin: 0 auto; }
+.wide { max-width: 1450px; margin: 0 auto; }
+.pad { padding: 2rem 0; }
+.muted { color: var(--ink-soft); }
+.small { font-size: .9rem; }
+.lede { font-size: 1.125rem; color: var(--ink-soft); }
+.stack > * + * { margin-top: 1rem; }
+.row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.ok { color: var(--green); }
+.ok-line { background: var(--green-wash); color: var(--green); padding: .7rem 1rem; border-radius: 15px; }
+
+/* --- header / footer ------------------------------------------------------ */
+
+.site-header {
+  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  max-width: 1450px; margin: 0 auto;
+  padding: 1rem 1.25rem;
+  background: var(--bg);
+  position: sticky; top: 0; z-index: 10;
+}
+.brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; color: inherit; }
+.brand-mark {
+  display: grid; place-items: center;
+  width: 44px; height: 44px; border-radius: 4px;
+  background: var(--teal); color: #fff; font-size: 1.25rem; font-weight: 400;
+}
+.brand strong { display: block; font-size: 1.15rem; font-weight: 400; }
+.brand small { display: block; color: var(--ink-soft); font-size: .78rem; line-height: 1.2; }
+
+.site-header nav { display: flex; gap: 1.5rem; flex: 1; flex-wrap: wrap; justify-content: center; }
+.site-header nav a {
+  padding: .4rem .2rem; border-radius: 8px;
+  text-decoration: none; color: var(--ink); font-weight: 400; font-size: 1.05rem;
+}
+.site-header nav a:hover { color: var(--teal); }
+.site-header nav a.active { color: var(--teal); text-decoration: underline; text-underline-offset: .4rem; }
+
+.header-right { display: flex; align-items: center; gap: .6rem; }
+.lang-toggle { display: flex; border: 1px solid var(--line); border-radius: 100px; overflow: hidden; background: var(--paper); }
+.lang-toggle button {
+  border: 0; background: transparent; cursor: pointer;
+  padding: .45rem .9rem; font: inherit; font-size: .9rem; color: var(--ink-soft);
+}
+.lang-toggle button[aria-pressed='true'] { background: var(--teal); color: #fff; }
+
+/* Full-bleed dark slab, as drawn. It sits outside <main>, so it can run the
+   whole width without fighting the page gutter. */
+.site-footer { background: var(--teal); color: #fff; padding: clamp(3rem, 5vw, 5rem) 1.25rem 2rem; }
+.footer-inner {
+  max-width: 1450px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2.5rem;
+}
+.footer-col h2 { font-size: clamp(1.4rem, 1.8vw, 2rem); font-weight: 400; margin-bottom: 1.5rem; }
+.footer-col ul { list-style: none; margin: 0; padding: 0; }
+.footer-col li { opacity: .7; font-size: 1.15rem; line-height: 2; }
+.footer-col a { color: inherit; text-decoration: none; }
+.footer-col a:hover { text-decoration: underline; }
+.footer-cta p { opacity: .7; margin-bottom: 1.5rem; }
+.footer-legal { max-width: 1450px; margin: 3rem auto 0; opacity: .7; text-align: right; }
+
+/* --- buttons and inputs --------------------------------------------------- */
+
+/* One button system for the whole app. Every clickable is a full pill — that
+   is the design's signature — in one of three fills: teal, white, or nothing
+   but a hairline. `danger` keeps its red: a destructive action has to read as
+   one, which outranks the two-tone rule. */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  min-height: 52px; padding: 0 1.75rem; border-radius: 100px; border: 1px solid transparent;
+  font: inherit; font-size: 1.0625rem; font-weight: 400; cursor: pointer; text-decoration: none;
+  transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+.btn.primary { background: var(--teal); color: #fff; }
+.btn.primary:hover:not(:disabled) { background: var(--teal-dark); }
+/* `ghost` is the secondary action *inside* a white card, so it fills with mint;
+   `white` is the same button on a teal ground, where white is the contrast. */
+.btn.ghost { background: var(--bg); border-color: var(--line); color: var(--ink); }
+.btn.ghost:hover:not(:disabled) { border-color: var(--teal); color: var(--teal); }
+.btn.white { background: var(--paper); color: var(--ink); }
+.btn.white:hover:not(:disabled) { background: var(--teal-wash); }
+.btn.outline { border-color: var(--ink); color: var(--ink); }
+.btn.outline:hover:not(:disabled) { background: var(--ink); color: #fff; }
+.btn.danger { background: var(--red-wash); color: var(--red); }
+.btn.danger:hover:not(:disabled) { background: #f9dad7; }
+.btn.big { min-height: 63px; padding: 0 2.25rem; font-size: clamp(1.05rem, 1.3vw, 1.5rem); }
+.btn.small { min-height: 40px; padding: 0 1.1rem; font-size: .95rem; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.link {
+  background: none; border: 0; padding: 0; font: inherit;
+  color: var(--teal); text-decoration: underline; text-underline-offset: .2em; cursor: pointer;
+}
+.back-link { display: inline-block; margin-bottom: 1rem; }
+
+input, textarea, select {
+  width: 100%; padding: .8rem 1.1rem; font: inherit;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: inherit;
+}
+input:focus, textarea:focus, select:focus, button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--teal); outline-offset: 1px;
+}
+textarea { resize: vertical; }
+input[type='date'], input[type='month'], input[type='number'] { width: auto; min-width: 9rem; }
+input[type='file'] { padding: .6rem; }
+
+.field { display: block; margin-bottom: 1.1rem; }
+.field-label { display: block; font-size: 1rem; margin-bottom: .4rem; }
+.field small { display: block; margin-top: .35rem; font-size: .9rem; }
+.code-input { font-size: 1.75rem; letter-spacing: .4em; text-align: center; max-width: 12ch; }
+.phone-chip { background: var(--bg); border-radius: 100px; padding: .4rem 1rem; font-size: .95rem; }
+
+/* --- cards, sections, lists ------------------------------------------------ */
+
+/* Flat white on mint, 15px radius, no border. Depth comes from the gap
+   between cards, not from a rule around each one. */
+.card {
+  background: var(--paper); border-radius: 15px;
+  padding: clamp(1.5rem, 2.4vw, 2.5rem); margin-bottom: 1.5rem;
+}
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+.panel { background: var(--bg); border-radius: 15px; padding: 1.25rem; margin-top: 1rem; }
+.page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.empty { padding: 2rem 0; text-align: center; }
+
+.list { list-style: none; margin: 0; padding: 0; }
+.list > li + li { border-top: 1px solid var(--line); }
+.row-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 1rem; padding: 1.1rem 0; flex-wrap: wrap;
+}
+.row-item p { margin: 0; }
+.row-actions { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.confirm { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.money { font-weight: 500; }
+.patient-link { font-size: 1.15rem; text-decoration: none; }
+
+.pill {
+  display: inline-block; padding: .25rem .9rem; border-radius: 100px;
+  font-size: .9rem; font-weight: 400; background: var(--bg); color: var(--ink-soft);
+}
+.pill.soft { background: var(--teal-wash); color: var(--teal); }
+.status-confirmed, .paid { background: var(--green-wash); color: var(--green); }
+.status-pending, .status-held, .unpaid { background: var(--amber-wash); color: var(--amber); }
+.status-declined, .status-cancelled { background: var(--red-wash); color: var(--red); }
+.pill.flag { background: var(--red-wash); color: var(--red); }
+.pill.allergy { background: var(--amber-wash); color: var(--amber); }
+.chips { display: flex; gap: .45rem; flex-wrap: wrap; }
+
+.tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.tabs button {
+  border: 1px solid var(--line); background: var(--paper); font: inherit; cursor: pointer;
+  padding: .5rem 1.25rem; border-radius: 100px; color: var(--ink-soft);
+}
+.tabs button:hover { border-color: var(--teal); color: var(--teal); }
+.tabs button.is-active { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+.problem {
+  display: flex; gap: .75rem; align-items: center; flex-wrap: wrap;
+  background: var(--red-wash); color: var(--red);
+  border-radius: 15px; padding: .9rem 1.1rem; margin-bottom: 1.1rem;
+}
+
+/* --- landing (Mecliw design) ------------------------------------------------
+   The Figma frame is 1920 wide with a 1455 content column and type running up
+   to 110px. Everything below is that column plus clamp() so the same headline
+   that fills a desktop still fits a phone. */
+
+.home { max-width: 1450px; margin: 0 auto; display: grid; gap: clamp(4rem, 7vw, 9rem); }
+.home h1 { font-family: var(--display); font-weight: 400; font-size: clamp(2.4rem, 5.8vw, 6.9rem); letter-spacing: -.01em; }
+.home h2 { font-family: var(--display); font-weight: 400; font-size: clamp(1.9rem, 3.9vw, 4.6rem); }
+.home h3 { font-weight: 400; font-size: clamp(1.2rem, 1.5vw, 1.75rem); margin-top: 0; }
+.home p { font-size: 1.125rem; line-height: 1.67; }
+.soft { color: var(--ink); opacity: .7; }
+.paper { background: var(--paper); border-radius: 15px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+/* Grey blocks stand in for the photography the Figma file has not shipped. */
+.photo {
+  display: block; background: #d9d9d9; border-radius: 15px;
+  font-size: 0; color: transparent;
+}
+
+.outline-chip {
+  display: inline-flex; align-items: center; padding: .25rem 1rem;
+  border: 1px solid var(--line); border-radius: 100px; font-size: 1rem;
+}
+
+/* hero ---------------------------------------------------------------------- */
+
+.hero { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 48%); gap: 2rem; }
+.hero-copy { display: flex; flex-direction: column; align-items: flex-start; }
+.hero h1 { margin: .5rem 0 2rem; }
+.avatar-pill {
+  display: inline-flex; align-items: center; vertical-align: middle;
+  background: var(--teal); border-radius: 100px;
+  padding: clamp(.35rem, .6vw, .7rem) clamp(.5rem, .9vw, .9rem);
+  margin-left: .5rem;
+}
+.avatar-pill img { display: block; height: clamp(1.4rem, 2.8vw, 3.35rem); width: auto; }
+.kicker { text-transform: uppercase; letter-spacing: .08em; font-size: .85rem; color: var(--teal); margin: 0; }
+.hero .lede { max-width: 46ch; }
+.hero-actions { gap: 1rem; margin: 1.5rem 0; }
+
+.hero-stats { display: flex; gap: clamp(2rem, 5vw, 4rem); margin: auto 0 0; }
+.hero-stats dt { font-size: clamp(1.8rem, 2.6vw, 3rem); }
+.hero-stats dd { margin: .4rem 0 0; font-size: 1.125rem; }
+
+.hero-art { position: relative; }
+.hero-photo { width: 100%; aspect-ratio: 717 / 1078; border-radius: 0; }
+.doctor-chip {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--paper); border-radius: 10px; padding: 1rem 1.25rem;
+  box-shadow: 0 4px 30px rgb(0 0 0 / 10%);
+}
+.doctor-chip-face { width: 67px; height: 67px; border-radius: 50%; background: #d9d9d9; flex: none; }
+.doctor-chip strong { display: block; font-weight: 400; font-size: 1.35rem; }
+.doctor-chip small { display: block; color: var(--ink); opacity: .7; }
+.doctor-chip img { flex: none; }
+
+.hero-next { padding: 1.5rem 1.75rem; background: var(--paper); border-radius: 10px; }
+.hero-next h2 { font-size: 2rem; margin: 0 0 .25rem; }
+.hero-next p { margin: 0 0 1rem; }
+.chip-row { display: flex; flex-wrap: wrap; gap: .6rem; list-style: none; margin: 0; padding: 0; }
+.chip-row a {
+  display: inline-block; padding: .25rem 1rem; border-radius: 100px;
+  border: 1px solid var(--line); color: inherit; text-decoration: none; font-size: 1rem;
+}
+.chip-row a:hover { border-color: var(--teal); color: var(--teal); }
+
+@media (min-width: 1000px) {
+  .hero { padding-bottom: 6rem; }
+  .doctor-chip { position: absolute; left: 44%; top: 48%; width: max-content; }
+  .hero-next { position: absolute; left: 36%; bottom: 0; width: min(607px, 44%); }
+}
+
+/* how it works -------------------------------------------------------------- */
+
+.step-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(1rem, 2vw, 3rem); }
+.step-card {
+  display: flex; flex-direction: column; justify-content: space-between; gap: 3rem;
+  min-height: 340px; padding: clamp(1.5rem, 2.2vw, 3rem);
+}
+.big-number { font-size: clamp(2.5rem, 3.6vw, 4rem); line-height: 1; margin: 0; }
+.step-card h3 { margin-bottom: 1.2rem; }
+.step-card p { margin: 0; }
+
+/* about --------------------------------------------------------------------- */
+
+.about { display: grid; grid-template-columns: minmax(0, 40%) minmax(0, 1fr); grid-template-rows: auto auto; gap: 2rem clamp(2rem, 5vw, 6rem); }
+.about-photo { grid-row: 1 / span 2; aspect-ratio: 580 / 682; height: 100%; }
+.about-photo-small { justify-self: end; width: min(330px, 60%); aspect-ratio: 330 / 216; }
+.about-copy { align-self: end; }
+.about-copy h2 { margin-bottom: 2rem; }
+.doctor-line { margin-bottom: 0; }
+
+/* the clinic ---------------------------------------------------------------- */
+
+.clinic { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40%); gap: 2rem clamp(2rem, 5vw, 6rem); align-items: start; }
+.clinic-copy h2 { margin-bottom: 2rem; }
+.clinic-copy .btn-round { margin-top: 1.5rem; }
+.hours-card { padding: clamp(1.5rem, 2.2vw, 2.5rem); }
+.hours { width: 100%; border-collapse: collapse; }
+.hours th { text-align: left; font-weight: 400; padding: .45rem 0; }
+.hours td { text-align: right; padding: .45rem 0; }
+.hours .is-closed { color: var(--ink-soft); }
+.hours-foot { display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line); margin: 1rem 0 0; padding-top: .8rem; }
+
+/* services ------------------------------------------------------------------ */
+
+.services { display: grid; gap: clamp(2rem, 4vw, 4rem); }
+.services-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 46%); gap: 2rem; align-items: start; }
+.fee-card { padding: 1.5rem 1.75rem; border-radius: 10px; }
+.fee-card h3 { margin-bottom: .25rem; }
+.fee-amount { font-size: 2rem; margin: 0 0 .5rem; }
+.fee-card .small { font-size: 1rem; margin-bottom: 1rem; }
+
+.service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: clamp(1rem, 2vw, 3rem); }
+.service-card { display: grid; gap: 1.75rem; padding: clamp(1.5rem, 2.2vw, 2.8rem); align-content: start; }
+.service-card > div { grid-column: 1; }
+.icon-tile {
+  display: inline-flex; padding: 20px; border-radius: 4px; background: var(--teal);
+  width: max-content;
+}
+.service-photo { aspect-ratio: 705 / 229; }
+
+/* dark banner --------------------------------------------------------------- */
+
+.banner {
+  display: grid; justify-items: center; gap: 3rem; text-align: center;
+  background: var(--teal); color: #fff; border-radius: 15px;
+  padding: clamp(3rem, 6vw, 6rem) 1.5rem;
+}
+.banner h2 { max-width: 16ch; margin: 0; }
+
+/* testimonials -------------------------------------------------------------- */
+
+.quotes-head { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 3rem; }
+.quotes-head h2 { max-width: 18ch; margin: 0; }
+.quote-row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: clamp(2rem, 4vw, 5rem); }
+.quote-row li { position: relative; }
+.quote-row .stars { height: 29px; width: auto; margin-bottom: 1.75rem; }
+.quote-by { display: flex; flex-direction: column; margin: 1.5rem 0 0; }
+.quote-by strong { font-weight: 400; font-size: 1.6rem; }
+.quote-mark { position: absolute; right: 0; bottom: 0; width: 74px; height: 74px; opacity: .35; }
+
+/* --- booking --------------------------------------------------------------- */
+
+.day-strip { list-style: none; display: flex; gap: .6rem; overflow-x: auto; padding: .25rem 0 1rem; margin: 0; }
+.day-chip {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: .15rem;
+  min-width: 84px; padding: .9rem .6rem 1.35rem; cursor: pointer;
+  background: var(--bg); border: 1px solid transparent; border-radius: 15px; font: inherit;
+}
+.day-chip:hover:not(:disabled) { border-color: var(--teal); }
+.day-chip:disabled { opacity: .45; cursor: not-allowed; }
+.day-chip.is-picked { background: var(--teal); border-color: var(--teal); color: #fff; }
+.day-chip.is-picked .day-weekday, .day-chip.is-picked .day-free { color: inherit; opacity: .8; }
+
+/* The other calendar's date, tucked into the corner the way a Nepali wall
+   calendar carries the Gregorian one. Both cards reserve bottom padding for it
+   so it never lands on the load dots or the "3 free" line. */
+.date-alt {
+  position: absolute; right: .45rem; bottom: .3rem;
+  font-size: .68rem; line-height: 1; color: var(--ink-soft);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.is-picked .date-alt { color: inherit; opacity: .75; }
+.day-weekday { font-size: .85rem; color: var(--ink-soft); }
+.day-number { font-size: 1.6rem; line-height: 1.1; }
+.day-free { font-size: .78rem; color: var(--teal); }
+
+.slot-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); }
+.slot {
+  width: 100%; padding: .7rem .5rem; cursor: pointer; font: inherit;
+  background: var(--bg); border: 1px solid transparent; border-radius: 100px;
+}
+.slot:hover:not(:disabled) { border-color: var(--teal); }
+.slot:disabled { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
+.slot.is-picked { background: var(--teal); border-color: var(--teal); color: #fff; }
+.slot small { display: block; font-size: .72rem; }
+
+.hold-bar {
+  margin-top: 1.25rem; padding: .8rem 1.1rem; border-radius: 15px;
+  background: var(--teal-wash); color: var(--teal);
+}
+.hold-bar.is-expired { background: var(--red-wash); color: var(--red); }
+
+.review { display: grid; grid-template-columns: max-content 1fr; gap: .6rem 1.75rem; margin: 0 0 1.5rem; }
+.review dt { color: var(--ink-soft); }
+.review dd { margin: 0; }
+
+.signin form { max-width: 24rem; }
+
+/* --- the appointment slip -------------------------------------------------- */
+
+.slip {
+  background: var(--paper); border-radius: 15px;
+  padding: clamp(1.75rem, 3vw, 3rem); margin-bottom: 1.5rem;
+  box-shadow: 0 4px 30px rgb(0 0 0 / 10%); /* the one place the design elevates a card */
+}
+.slip-head {
+  display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  border-bottom: 1px solid var(--ink); padding-bottom: 1rem; margin-bottom: 1.75rem;
+}
+.slip-head-right { text-align: right; }
+.slip-ref { display: block; font-size: 1.5rem; }
+.slip-body { display: flex; gap: 2rem; justify-content: space-between; flex-wrap: wrap; margin: 1.75rem 0; }
+.slip-qr { text-align: center; }
+.qr { width: 148px; height: 148px; }
+.qr svg { width: 100%; height: 100%; display: block; }
+.slip-total {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-top: 1px solid var(--ink); padding-top: 1rem; font-size: 1.6rem;
+}
+.slip-footnote { border-top: 1px dashed var(--line); padding-top: 1rem; margin-top: 1.5rem; }
+
+/* --- record / timeline ----------------------------------------------------- */
+
+.timeline { list-style: none; margin: 0; padding: 0 0 0 1.4rem; border-left: 1px solid var(--line); }
+.timeline > li { position: relative; padding: 0 0 2rem 0; }
+.timeline > li::before {
+  content: ''; position: absolute; left: -1.85rem; top: .55rem;
+  width: 10px; height: 10px; border-radius: 50%; background: var(--teal);
+}
+.timeline-head { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+.reason { color: var(--ink-soft); margin: 0; }
+.note { white-space: pre-wrap; background: var(--bg); border-radius: 15px; padding: .8rem 1rem; }
+.big-note { font-size: 1.125rem; }
+.rx { margin-top: 1rem; background: var(--bg); border-radius: 15px; padding: 1rem 1.25rem; }
+.rx table, .rx-editor { width: 100%; border-collapse: collapse; }
+.rx th, .rx td, .rx-editor th, .rx-editor td { text-align: left; padding: .45rem .4rem; border-bottom: 1px solid var(--line); }
+.rx th, .rx-editor th { font-size: .9rem; color: var(--ink-soft); font-weight: 400; }
+.rx-editor td:last-child { width: 2rem; }
+
+/* --- doctor ---------------------------------------------------------------- */
+
+/* The calendar column has to leave the grid ~340px after the card's padding,
+   which itself grows with the viewport — below that a day cell cannot hold a
+   number, a load badge and the other calendar's date without them touching. */
+.doctor-grid { display: grid; grid-template-columns: minmax(400px, 480px) 1fr; gap: 1.5rem; align-items: start; }
+
+.agenda { list-style: none; margin: 0; padding: 0; }
+.agenda > li {
+  display: flex; gap: 1rem; align-items: flex-start;
+  padding: .9rem 0; border-top: 1px solid var(--line);
+}
+.agenda > li.is-free { opacity: .6; }
+.agenda-time { min-width: 5.5rem; font-variant-numeric: tabular-nums; font-weight: 500; }
+.agenda-entry { display: flex; justify-content: space-between; gap: 1rem; flex: 1; flex-wrap: wrap; }
+.agenda-entry p { margin: 0; }
+
+.cal-weekdays, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.cal-weekdays { font-size: .72rem; color: var(--ink-soft); text-align: center; margin-bottom: .3rem; }
+.cal-day {
+  position: relative;
+  /* min-width: 0 because a grid item's automatic minimum size is its content,
+     and with aspect-ratio that feeds back into the row height — one cell whose
+     content does not fit drags all seven columns wider than the card. */
+  aspect-ratio: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; padding: 0; cursor: pointer; font: inherit;
+  background: var(--bg); border: 1px solid transparent; border-radius: 10px;
+}
+.cal-day .date-alt { right: .25rem; bottom: .1rem; font-size: .58rem; }
+.cal-day:hover { border-color: var(--teal); }
+.cal-day.is-today { box-shadow: inset 0 0 0 2px var(--teal-wash); }
+.cal-day.is-picked { background: var(--teal); border-color: var(--teal); color: #fff; }
+.cal-day.is-blocked { background: repeating-linear-gradient(45deg, var(--bg), var(--bg) 4px, #dfeeee 4px, #dfeeee 8px); }
+.cal-number { font-size: .95rem; font-variant-numeric: tabular-nums; }
+/* Load in one bottom corner, the other calendar's date in the other, so the
+   two never sit on each other; the day number keeps the middle to itself. */
+.cal-load { display: flex; gap: 2px; position: absolute; left: .25rem; bottom: .18rem; }
+.cal-day .dot { min-width: 13px; height: 13px; font-size: .58rem; }
+.dot {
+  display: inline-grid; place-items: center; min-width: 15px; height: 15px; padding: 0 3px;
+  border-radius: 100px; font-size: .62rem; font-weight: 500;
+}
+.dot.booked { background: var(--green-wash); color: var(--green); }
+.dot.pending { background: var(--amber-wash); color: var(--amber); }
+.cal-day.is-picked .dot { background: rgb(255 255 255 / 25%); color: #fff; }
+.legend { display: flex; align-items: center; gap: .3rem .9rem; flex-wrap: wrap; margin-top: .8rem; font-size: .8rem; }
+.legend > span { display: inline-flex; align-items: center; gap: .35rem; }
+.month-label { min-width: 9rem; text-align: center; font-size: 1.15rem; }
+
+.cal-day.is-partial { background: linear-gradient(to bottom, #dfeeee 0 50%, var(--bg) 50% 100%); }
+.swatch { display: inline-block; width: 15px; height: 15px; border-radius: 4px; }
+.swatch.is-partial { background: linear-gradient(to bottom, #dfeeee 0 50%, var(--bg) 50% 100%); }
+.swatch.is-blocked { background: repeating-linear-gradient(45deg, var(--bg), var(--bg) 4px, #dfeeee 4px, #dfeeee 8px); }
+
+.panel-heading { font-size: 1rem; font-weight: 500; color: var(--ink-soft); margin: 1.5rem 0 .6rem; }
+.panel-heading:first-of-type { margin-top: 1rem; }
+.warn-line { background: var(--amber-wash); color: var(--amber); padding: .7rem 1rem; border-radius: 15px; }
+.small-tabs { margin-bottom: 1rem; }
+.slot.is-taken { opacity: .55; border-style: dashed; cursor: default; }
+
+.hours-editor > li { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding: .7rem 0; }
+.hours-day { min-width: 4.5rem; font-weight: 500; }
+.hours-editor input[type='time'] { min-width: 0; width: auto; padding: .5rem .6rem; }
+.hours-editor > li > .row { flex: 1; }
+.setting-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 1.5rem; }
+.check { display: flex; align-items: center; gap: .6rem; margin-bottom: .8rem; }
+.check input { width: auto; }
+
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
+.stat { background: var(--paper); border-radius: 10px; padding: 1.5rem; }
+.stat-label { display: block; font-size: .95rem; color: var(--ink-soft); }
+.stat-value { display: block; font-size: 2.6rem; font-weight: 400; line-height: 1.2; }
+
+.bars { list-style: none; margin: 0; padding: 0; }
+.bars li { display: grid; grid-template-columns: minmax(5rem, 10rem) 1fr 2.5rem; gap: .6rem; align-items: center; padding: .35rem 0; }
+.bar-label { font-size: .95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { background: var(--bg); border-radius: 100px; height: 12px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: var(--teal); border-radius: 100px; }
+.bar-value { text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+
+/* --- narrow screens -------------------------------------------------------- */
+
+@media (max-width: 999px) {
+  .hero, .about, .clinic, .services-head, .doctor-grid { grid-template-columns: 1fr; }
+  .about-photo { grid-row: auto; height: auto; }
+  .about-photo-small { display: none; }
+  .site-header { gap: .75rem; }
+  .site-header nav { order: 3; width: 100%; flex: none; justify-content: flex-start; }
+}
+
+@media (max-width: 560px) {
+  main { padding: 1rem .85rem 3rem; }
+  .row-item { flex-direction: column; }
+  .step-card { min-height: 0; gap: 1.5rem; }
+  .hero-stats { flex-wrap: wrap; }
+  .footer-legal { text-align: left; }
+  .slip { padding: 1.1rem; }
+  .review { grid-template-columns: 1fr; gap: 0 0; }
+  .review dd { margin-bottom: .5rem; }
+}
+
+/* --- print: the slip is the page ------------------------------------------
+   "Save as PDF" is the browser's own print dialogue. A PDF library would ship
+   300 kB to produce a worse-looking document than this. */
+
+@media print {
+  .no-print, .site-header, .site-footer, .tabs { display: none !important; }
+  body { background: #fff; font-size: 12pt; }
+  main { padding: 0; }
+  .slip {
+    border: 0; box-shadow: none; padding: 0; margin: 0;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .card { border: 1px solid #ccc; box-shadow: none; }
+  a { text-decoration: none; color: inherit; }
+  @page { margin: 16mm; }
+}
